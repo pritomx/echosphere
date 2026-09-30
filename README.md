@@ -9,7 +9,7 @@ Every value is labelled with exactly one provenance state:
 
 | Label | Meaning |
 |---|---|
-| **REAL NISAR** | Computed by `process_nisar.py` from a NISAR HDF5 file that *you* put in `data/raw/` |
+| **REAL NISAR** | Computed by `process_nisar.py` from a NISAR HDF5 file that *is* put in `data/raw/` |
 | **DEMO** | Synthetic, illustrative scenario (`js/locations.js`). Not a NASA/NISAR observation |
 | **SIMULATED** | Prototype parts: risk rules, rainfall context, SMS gateway, phone message |
 | **LIVE NASA** | Real data fetched at view time from public NASA APIs (no key). This is catalog metadata, imagery tiles or rainfall, not locally processed HDF5 |
@@ -110,14 +110,6 @@ data/raw/         your NISAR .h5 files
 data/processed/   generated PNG overlays
 ```
 
-## Limitations
-
-- The open-water mask uses a single threshold. It is **not a validated operational flood map**.
-- Backscatter also responds to vegetation, soil moisture, viewing geometry, speckle and mixed pixels.
-- Real-data processing is built against the documented NISAR L2 layout. It has only been exercised on **synthetic test files shaped like GCOV**, because no real NISAR files were available during development. GUNW/GOFF handling follows the product specification but is untested on real files.
-- The risk rules, rainfall and SMS are simulated. GPM IMERG is not connected.
-- Basemap © Esri, HERE, Garmin, © OpenStreetMap contributors. Map library: Leaflet.
-
 ## Dashboard layout
 
 - **Top bar → API:** status, latency and a quick endpoint tester for every connected live API.
@@ -160,5 +152,6 @@ python erosion_watch.py      # writes data/erosion.js + data/processed/erosion_c
 ```
 
 This is a screening signal. Two dates cannot separate erosion from water-level change, and there is no field validation yet.
+"# echosphere" 
 "# echosphere" 
 "# echosphere" 
