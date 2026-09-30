@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Flood Watch — EchoSphere</title>
+  <meta name="description" content="Real NISAR radar observations: open water, change between dates, rain and flood warnings.">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <link rel="stylesheet" href="css/style.css?v=202609291530">
+</head>
+<body data-page="observe">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="index.html"><b>EchoSphere</b><span>Team THEIA</span></a>
+  <ul class="tabs" id="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="monitor.html">Area Selection</a></li>
+    <li><a href="erosion.html"><span class="step">01</span>Erosion Watch</a></li>
+    <li><a href="explore.html" aria-current="page"><span class="step">02</span>Flood Watch</a></li>
+    <li><a href="about.html">Method</a></li>
+  </ul>
+  <div class="sysline"><span id="sys-mode"></span><span>UTC <b id="sys-clock">--:--:--</b></span></div>
+  <button class="apibtn" id="api-btn" type="button" aria-expanded="false" aria-controls="api-menu"><span class="apidot" id="api-dot"></span>APIs</button>
+  <div class="apimenu" id="api-menu" hidden></div>
+  <button class="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Open navigation menu">≡</button>
+</header>
+
+<main id="main" class="wrap">
+  <div class="section-head" style="margin-top:8px">
+    <div>
+      <span class="eyebrow">02 · Flood Watch</span>
+      <h1 class="h2" id="site-title" style="font-size:clamp(36px,5vw,60px)">—</h1>
+      <p class="mu" id="site-sub" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"></p>
+    </div>
+    <div style="display:grid;gap:10px;justify-items:end"><div class="seg" id="site-seg" role="group" aria-label="Site"></div><div class="seg" id="obs-mode" role="group" aria-label="Mode"><button type="button" data-mode="current" aria-pressed="true">Current state</button><button type="button" data-mode="simulate" aria-pressed="false">Simulate</button></div></div>
+  </div>
+
+  <section class="pn" style="margin-bottom:16px" aria-label="Key numbers">
+    <div class="kpis" id="stats"></div>
+    <div id="flood-flag" hidden></div>
+  </section>
+
+  <section class="pn map-card" id="map-card" aria-label="Map">
+    <div style="position:relative">
+      <div id="map" role="region" aria-label="Map of the selected site"></div>
+      <div class="map-top">
+        <div class="seg glass" id="layer-seg" role="group" aria-label="Map layer">
+          <button type="button" data-layer="water" aria-pressed="true">Open water</button>
+          <button type="button" data-layer="change">Change</button>
+          <button type="button" data-layer="radar">Radar</button>
+        </div>
+      </div>
+      <div class="swipe-handle" id="swipe" tabindex="0" role="slider" aria-label="Before and after divider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"><div class="knob" aria-hidden="true">⇆</div></div>
+      <div class="swipe-labels" aria-hidden="true"><span class="glass" id="swipe-before"></span><span class="glass" id="swipe-after"></span></div>
+    </div>
+    <div class="map-bottom">
+      <div class="dates" id="dates" role="group" aria-label="Acquisition date"></div>
+      <button class="btn btn-sm" id="btn-compare" type="button" aria-pressed="false">⇆ Before / After</button>
+      <div class="row" style="margin-left:auto;gap:18px">
+        <div style="min-width:120px"><label for="opacity" style="margin:0 0 2px">Opacity</label><input type="range" id="opacity" min="20" max="100" value="90"></div>
+      </div>
+    </div>
+    <p class="cap" id="thr-note" style="padding:0 20px 14px;margin:0"><span id="granule"></span></p>
+  </section>
+
+
+  <section id="act" data-keep>
+  <div class="section-head"><div><span class="eyebrow">Flood warning</span><h2 class="h2">From radar signal to SMS</h2></div></div>
+  <section class="pn" style="margin-bottom:16px"><div class="pn-b" id="flow-diag"></div></section>
+
+  <div class="g">
+    <section class="pn c8">
+      <div class="pn-h"><h3>Flood simulator · signal → decision → SMS</h3><span class="r"><span class="tag tag-sim">SIMULATED</span></span></div>
+      <div class="kpis" style="margin-top:16px;grid-template-columns:repeat(3,1fr)">
+        <div class="kpi"><span class="k"><span>NISAR open-water rise</span></span><div id="in-water"><span class="v na">—</span></div></div>
+        <div class="kpi"><span class="k"><span>Rain · last 72 h</span></span><div id="in-rain"><span class="v na">—</span></div></div>
+        <div class="kpi"><span class="k"><span>Decision</span></span><div id="rule-result" aria-live="polite"></div><span class="src"><span class="tag tag-sim">SIMULATED</span></span></div>
+      </div>
+      <div class="pn-b">
+        <div class="row" style="justify-content:space-between;margin-bottom:12px">
+          <div class="seg" id="mode-seg" role="group" aria-label="Mode">
+            <button type="button" data-mode="current" aria-pressed="true">Current state</button>
+            <button type="button" data-mode="simulate" aria-pressed="false">Simulate</button>
+          </div>
+          <span id="mode-note" class="cap" style="margin:0"></span>
+        </div>
+        <div id="sim-controls" hidden>
+          <div class="g" style="margin:0">
+            <div class="c6"><label for="rule-water">Open-water rise (flood grows on the map) · <output id="rule-water-out" for="rule-water"></output></label><input type="range" id="rule-water" min="0" max="300" step="5" value="35"></div>
+            <div class="c6"><label for="rule-rain">72-h rainfall · <output id="rule-rain-out" for="rule-rain"></output></label><input type="range" id="rule-rain" min="0" max="250" step="5" value="140"></div>
+          </div>
+          <div class="row" style="margin-bottom:8px"><span class="lbl" style="margin:0">Presets</span>
+            <button class="btn btn-sm" type="button" data-preset="0,20">Dry season</button>
+            <button class="btn btn-sm" type="button" data-preset="15,70">Early monsoon</button>
+            <button class="btn btn-sm" type="button" data-preset="45,160">Peak monsoon flood</button>
+            <button class="btn btn-sm" type="button" data-preset="real">Reset to real</button>
+          </div>
+        </div>
+        <p class="lbl" style="margin-top:6px">Rule that fired</p>
+        <pre class="rule active" id="rule-fired"></pre>
+      </div>
+    </section>
+    <section class="pn c4">
+      <div class="pn-h"><h3>The message</h3></div>
+      <div class="pn-b">
+        <figure style="margin:0">
+          <div class="phone" role="img" aria-label="Simulated feature phone showing a Bangla SMS warning">
+            <div class="spk"></div>
+            <div class="screen">
+              <div class="st"><span>▂▄▆ 2G</span><span>SMS</span><span>▮▮▮▯</span></div>
+              <div id="sms-screen"><div class="from">FROM: ECHOSPHERE-SIM</div><p class="sms" id="sms-text" lang="bn"></p></div>
+              <p id="sms-idle" class="sms" hidden style="font:12px var(--mono)">No new messages<br>(risk below HIGH)</p>
+            </div>
+            <div class="keys" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>*</span><span>0</span><span>#</span></div>
+          </div>
+          <figcaption class="phone-caption"><span class="tag tag-sim">SIMULATED MESSAGE</span><span class="fa" id="phone-state" role="status"></span></figcaption>
+        </figure>
+      </div>
+    </section>
+  </div>
+
+  <div class="g">
+    <section class="pn c7"><div class="pn-h"><h3>Decision space</h3><span class="r fa">click to set inputs</span></div><div class="pn-b"><div id="rule-matrix"></div></div></section>
+    <section class="pn c5">
+      <div class="pn-h"><h3>The rules</h3></div>
+      <div class="pn-b" style="display:grid;gap:10px">
+        <pre class="rule" data-rule="0">IF NISAR open-water area rose more than 20%
+AND supporting rainfall &gt; 100 mm
+THEN risk = HIGH</pre>
+        <pre class="rule" data-rule="1">IF water increase &gt; 10%
+AND rainfall ≥ 50 mm (typically 50–100 mm)
+THEN MEDIUM</pre>
+        <pre class="rule" data-rule="2">OTHERWISE
+THEN LOW</pre>
+        <p class="cap" style="margin:0">Prototype thresholds — explore other values in Simulate mode.</p>
+      </div>
+    </section>
+  </div>
+
+  <section class="pn" style="margin-bottom:16px"><div class="pn-h"><h3>16-day outlook</h3><span class="r"><span class="tag tag-sim">SIMULATED</span></span></div><div class="pn-b" id="fc-risk"><p class="na">loading forecast…</p></div></section>
+
+  </section>
+
+  <div class="section-head" id="understand"><div><span class="eyebrow">02 · Understand</span><h2 class="h2">What changed, and how sure are we?</h2></div><button class="btn btn-sm" id="btn-export" type="button">Download analysis summary</button></div>
+  <div class="g">
+    <section class="pn c6"><div class="pn-h"><h3>Open water over time</h3></div><div class="pn-b" id="ch-water"></div></section>
+    <section class="pn c6"><div class="pn-h"><h3>Change distribution</h3></div><div class="pn-b" id="ch-hist"></div></section>
+  </div>
+  <div class="g">
+    <section class="pn c6"><div class="pn-h"><h3>Threshold sensitivity</h3></div><div class="pn-b" id="ch-thr"></div></section>
+    <section class="pn c6"><div class="pn-h"><h3>Rain vs radar passes · last 40 days</h3></div><div class="pn-b" id="ch-rain"><p class="na">loading NASA POWER…</p></div></section>
+  </div>
+
+  <details class="pn" style="margin-top:8px">
+    <summary><span class="eyebrow" style="margin:0">Data sources &amp; processing</span></summary>
+    <div class="g" style="padding:0 20px 20px;margin:0">
+      <div class="c6"><p class="lbl">This scene</p><div id="src-proc"></div></div>
+      <div class="c6"><p class="lbl">NASA catalog for this site</p><div id="src-live"></div></div>
+    </div>
+  </details>
+</main>
+
+<footer class="footer"><span>EchoSphere · Team THEIA · NASA Space Apps 2026</span><span>NISAR data: NASA-ISRO via ASF DAAC · Basemap © Esri, HERE, Garmin, © OpenStreetMap · Leaflet</span></footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="data/manifest.js?v=202609291530"></script>
+<script src="data/erosion.js?v=202609291530"></script>
+<script src="data/examples.js?v=202609291530"></script>
+<script src="js/locations.js?v=202609291530"></script>
+<script src="js/app.js?v=202609291530"></script>
+<script src="js/ui.js?v=202609291530"></script>
+<script src="js/monitor.js?v=202609291530"></script>
+</body>
+</html>

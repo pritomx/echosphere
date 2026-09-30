@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About — EchoSphere</title>
+  <meta name="description" content="NISAR, radar, the GCOV/GUNW/GOFF products, the EchoSphere pipeline, limitations and credits.">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=202609291530">
+</head>
+<body data-page="about">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="index.html"><b>EchoSphere</b><span>Team THEIA</span></a>
+  <ul class="tabs" id="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="monitor.html">Area Selection</a></li>
+    <li><a href="erosion.html"><span class="step">01</span>Erosion Watch</a></li>
+    <li><a href="explore.html"><span class="step">02</span>Flood Watch</a></li>
+    <li><a href="about.html" aria-current="page">Method</a></li>
+  </ul>
+  <div class="sysline"><span id="sys-mode"></span><span>UTC <b id="sys-clock">--:--:--</b></span></div>
+  <button class="apibtn" id="api-btn" type="button" aria-expanded="false" aria-controls="api-menu"><span class="apidot" id="api-dot"></span>APIs</button>
+  <div class="apimenu" id="api-menu" hidden></div>
+  <button class="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Open navigation menu">≡</button>
+</header>
+
+<main id="main" class="wrap">
+  <div class="section-head" style="margin-top:8px"><div><span class="eyebrow">Method</span><h1 class="h2" style="font-size:clamp(36px,5vw,60px)">How EchoSphere works</h1></div><p>The instrument, the processing, and the limits of what the numbers mean.</p></div>
+  <h1 class="sr-only">About EchoSphere</h1>
+  <div class="g">
+    <section class="pn c6">
+      <div class="pn-h"><span class="n">01</span>What is NISAR?</div>
+      <div class="pn-b flush">
+        <table class="data"><tbody>
+          <tr><td class="fa">Name</td><td>NASA-ISRO Synthetic Aperture Radar</td></tr>
+          <tr><td class="fa">Partners</td><td>NASA / JPL · ISRO</td></tr>
+          <tr><td class="fa">Launch</td><td>2025-07-30</td></tr>
+          <tr><td class="fa">Radars</td><td>L-band ~24 cm (NASA) · S-band ~10 cm (ISRO)</td></tr>
+          <tr><td class="fa">Antenna</td><td>12 m deployable reflector</td></tr>
+          <tr><td class="fa">Coverage</td><td>nearly all land &amp; ice, ~12-day repeat</td></tr>
+          <tr><td class="fa">Distribution</td><td>NASA ASF DAAC · Earthdata</td></tr>
+        </tbody></table>
+      </div>
+    </section>
+    <section class="pn c6">
+      <div class="pn-h"><span class="n">02</span>Why radar? · optical vs SAR</div>
+      <div class="pn-b flush">
+        <table class="data"><thead><tr><th></th><th>Optical</th><th>Radar (SAR)</th></tr></thead><tbody>
+          <tr><td class="fa">Illumination</td><td>sunlight</td><td class="status-ok">own microwave pulses</td></tr>
+          <tr><td class="fa">Night</td><td class="status-err">✕</td><td class="status-ok">✓ day/night operation</td></tr>
+          <tr><td class="fa">Clouds</td><td class="status-err">✕ blocked</td><td class="status-ok">✓ most cloud conditions</td></tr>
+          <tr><td class="fa">Reflected sunlight</td><td>required</td><td class="status-ok">independent</td></tr>
+          <tr><td class="fa">Calm water</td><td>varies</td><td>dark (specular)</td></tr>
+          <tr><td class="fa">Vegetation</td><td>green</td><td>medium (volume)</td></tr>
+          <tr><td class="fa">Buildings</td><td>varies</td><td>bright (double bounce)</td></tr>
+          <tr><td class="fa">Motion</td><td>—</td><td>phase / pixel offsets</td></tr>
+        </tbody></table>
+      </div>
+    </section>
+  </div>
+
+  <div class="g">
+    <section class="pn c4"><div class="pn-h"><span class="n">A</span>Radar wavelength</div><div class="pn-b" id="ab-bands"></div></section>
+    <section class="pn c4"><div class="pn-h"><span class="n">B</span>Revisit · 1 year</div><div class="pn-b" id="ab-repeat"></div></section>
+    <section class="pn c4"><div class="pn-h"><span class="n">C</span>Processing limits</div><div class="pn-b" id="ab-budget"></div></section>
+  </div>
+  <div class="g">
+    <section class="pn c6"><div class="pn-h"><span class="n">D</span>Limitation · threshold choice<span class="r"><span class="tag tag-real">CURRENT</span></span></div><div class="pn-b" id="ab-thr"></div></section>
+    <section class="pn c6"><div class="pn-h"><span class="n">E</span>Limitation · class overlap / speckle<span class="r"><span class="tag tag-real">CURRENT</span></span></div><div class="pn-b" id="ab-dist"></div></section>
+  </div>
+  <div class="g">
+    <section class="pn c4"><div class="pn-h"><span class="n">F</span>Limitation · downsampling<span class="r"><span class="tag tag-real">CURRENT</span></span></div><div class="pn-b" id="ab-down"></div></section>
+    <section class="pn c4"><div class="pn-h"><span class="n">G</span>Change detection rate<span class="r"><span class="tag tag-real">CURRENT</span></span></div><div class="pn-b" id="ab-change"></div></section>
+    <section class="pn c4"><div class="pn-h"><span class="n">H</span>Product × output</div><div class="pn-b" id="ab-matrix"></div></section>
+  </div>
+
+  <section class="pn" style="margin-bottom:8px">
+    <div class="pn-h"><span class="n">03</span>Products</div>
+    <div class="pn-b flush">
+      <table class="data cards">
+        <thead><tr><th>Product</th><th>Contains</th><th>EchoSphere output</th><th>Units</th><th>Caveat</th></tr></thead>
+        <tbody>
+          <tr><td data-label="Product"><b>GCOV</b></td><td data-label="Contains">geocoded covariance (HHHH, VVVV…)</td><td data-label="EchoSphere output">backscatter dB, Δ, open-water mask</td><td data-label="Units">dB</td><td data-label="Caveat">threshold is site-tuned</td></tr>
+          <tr><td data-label="Product"><b>GUNW</b></td><td data-label="Contains">unwrapped interferogram</td><td data-label="EchoSphere output">phase map; LOS displacement if λ known</td><td data-label="Units">file units · m (derived)</td><td data-label="Caveat">relative, sign unverified</td></tr>
+          <tr><td data-label="Product"><b>GOFF</b></td><td data-label="Contains">pixel offsets (along-track, slant-range)</td><td data-label="EchoSphere output">offset magnitude</td><td data-label="Units">file units</td><td data-label="Caveat">displacement, never velocity</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="pn" style="margin-bottom:8px">
+    <div class="pn-h"><span class="n">04</span>Processing</div>
+    <div class="pn-b"><div id="about-pipeline"></div>
+      <p class="cap">h5py · rasterio · pyproj · Pillow → data/manifest.js</p></div>
+  </section>
+
+  <div class="g">
+    <section class="pn c7">
+      <div class="pn-h"><span class="n">05</span>Limitations</div>
+      <div class="pn-b flush">
+        <table class="data cards"><thead><tr><th>Area</th><th>Limitation</th><th>Effect</th></tr></thead><tbody>
+          <tr><td data-label="Area">Water mask</td><td data-label="Limitation">single threshold, no validation</td><td data-label="Effect">not an operational flood product</td></tr>
+          <tr><td data-label="Area">Physics</td><td data-label="Limitation">wind roughening, double bounce</td><td data-label="Effect">missed water</td></tr>
+          <tr><td data-label="Area">Physics</td><td data-label="Limitation">sand, radar shadow</td><td data-label="Effect">false water</td></tr>
+          <tr><td data-label="Area">Backscatter</td><td data-label="Limitation">vegetation, moisture, geometry, speckle, mixed pixels</td><td data-label="Effect">Δσ not only water</td></tr>
+          <tr><td data-label="Area">Resolution</td><td data-label="Limitation">≤1024 px overlays, ≤200 px grid</td><td data-label="Effect">narrow channels smoothed</td></tr>
+          <tr><td data-label="Area">GUNW</td><td data-label="Limitation">relative phase, unwrapping, atmosphere</td><td data-label="Effect">indicative LOS only</td></tr>
+          <tr><td data-label="Area">GOFF</td><td data-label="Limitation">radar geometry</td><td data-label="Effect">no geographic direction</td></tr>
+          <tr><td data-label="Area">Formats</td><td data-label="Limitation">product layouts may change</td><td data-label="Effect">file skipped with report</td></tr>
+          <tr><td data-label="Area">SIMULATED</td><td data-label="Limitation">what-if scenarios</td><td data-label="Effect">not observations</td></tr>
+          <tr><td data-label="Area">NASA APIs</td><td data-label="Limitation">catalog metadata, model weather</td><td data-label="Effect">context, not calibrated σ</td></tr>
+          <tr><td data-label="Area">Next pass</td><td data-label="Limitation">12-day repeat assumption</td><td data-label="Effect">date may shift by a pass</td></tr>
+          <tr><td data-label="Area">Offline</td><td data-label="Limitation">basemap/fonts need internet</td><td data-label="Effect">blank map background</td></tr>
+        </tbody></table>
+      </div>
+    </section>
+    <section class="pn c5">
+      <div class="pn-h"><span class="n">06</span>Credits</div>
+      <div class="pn-b flush">
+        <table class="data"><tbody>
+          <tr><td class="fa">Mission</td><td>NASA / JPL-Caltech · ISRO</td></tr>
+          <tr><td class="fa">Data</td><td>NASA ASF DAAC · Earthdata (user-supplied files only)</td></tr>
+          <tr><td class="fa">APIs</td><td>NASA CMR · GIBS · POWER · ASF Search · Open-Meteo</td></tr>
+          <tr><td class="fa">Concept only</td><td>GPM IMERG (NASA/JAXA), not accessed</td></tr>
+          <tr><td class="fa">Map</td><td><a href="https://leafletjs.com">Leaflet</a> · basemap © Esri, HERE, Garmin, © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a></td></tr>
+          <tr><td class="fa">Python</td><td>h5py · NumPy · Rasterio · PyProj · Pillow</td></tr>
+          <tr><td class="fa">Fonts</td><td>IBM Plex Sans/Mono · Noto Sans Bengali</td></tr>
+        </tbody></table>
+        <p class="cap" style="padding:8px 10px">Hackathon project. Not an official NASA, ISRO or Government of Bangladesh product.</p>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="footer"><span>EchoSphere · Team THEIA · NASA Space Apps 2026</span><span><a href="explore.html">Explore</a> · <a href="index.html">Overview</a></span></footer>
+<script src="data/manifest.js?v=202609291530"></script>
+<script src="data/erosion.js?v=202609291530"></script>
+<script src="data/examples.js?v=202609291530"></script>
+<script src="js/locations.js?v=202609291530"></script>
+<script src="js/app.js?v=202609291530"></script>
+<script src="js/ui.js?v=202609291530"></script>
+<script src="js/monitor.js?v=202609291530"></script>
+</body>
+</html>

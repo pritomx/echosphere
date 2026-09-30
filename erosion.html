@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Erosion Watch · Jamuna — EchoSphere</title>
+  <meta name="description" content="Every 12 days, through monsoon clouds: where the Jamuna's banks moved and which villages the river came closer to. Real NISAR radar.">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <link rel="stylesheet" href="css/style.css?v=202609291530">
+</head>
+<body data-page="erosion">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="index.html"><b>EchoSphere</b><span>Team THEIA</span></a>
+  <ul class="tabs" id="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="monitor.html">Area Selection</a></li>
+    <li><a href="erosion.html" aria-current="page"><span class="step">01</span>Erosion Watch</a></li>
+    <li><a href="explore.html"><span class="step">02</span>Flood Watch</a></li>
+    <li><a href="about.html">Method</a></li>
+  </ul>
+  <div class="sysline"><span id="sys-mode"></span><span>UTC <b id="sys-clock">--:--:--</b></span></div>
+  <button class="apibtn" id="api-btn" type="button" aria-expanded="false" aria-controls="api-menu"><span class="apidot" id="api-dot"></span>APIs</button>
+  <div class="apimenu" id="api-menu" hidden></div>
+  <button class="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Open navigation menu">≡</button>
+</header>
+
+<main id="main" class="wrap">
+  <div class="section-head" style="margin-top:8px">
+    <div>
+      <span class="eyebrow">01 · Jamuna Erosion Watch</span>
+      <h1 class="h2" style="font-size:clamp(36px,5vw,62px)">Where did the river move?</h1>
+      <p class="mu" id="ew-sub" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"></p>
+    </div>
+    <div style="max-width:440px;display:grid;gap:10px;justify-items:end">
+      <div class="seg" id="ew-mode" role="group" aria-label="Mode"><button type="button" data-mode="current" aria-pressed="true">Current state</button><button type="button" data-mode="simulate" aria-pressed="false">Simulate</button></div>
+      <div id="ew-verdict" style="width:100%"></div>
+    </div>
+  </div>
+
+
+  <section class="pn" style="margin-bottom:16px"><div class="kpis" id="ew-kpis"></div></section>
+
+  <section class="pn map-card" style="margin-bottom:16px">
+    <div style="position:relative">
+      <div id="map" role="region" aria-label="Map of Jamuna bank lines and settlements"></div>
+      <div class="map-top">
+        <div class="seg glass" role="group" aria-label="Map layers" id="ew-layers">
+          <button type="button" data-l="change" aria-pressed="true">Land lost / gained</button>
+          <button type="button" data-l="banks" aria-pressed="true">Bank lines</button>
+          <button type="button" data-l="places" aria-pressed="true">Settlements</button>
+        </div>
+      </div>
+    </div>
+    <div class="map-bottom" id="ew-legend"></div>
+  </section>
+
+  <section class="pn" id="ew-sim" hidden style="margin-bottom:16px;border-color:rgba(185,163,230,.45)">
+    <div class="pn-h"><h3>Monsoon scenario</h3><span class="r"><span class="tag tag-sim">SIMULATED</span></span></div>
+    <div class="pn-b">
+      <div class="g" style="margin:0;align-items:end">
+        <div class="c6"><label for="ew-adv">Extra bank advance toward settlements · <output id="ew-adv-out">0 m</output></label><input type="range" id="ew-adv" min="0" max="1200" step="20" value="0"></div>
+        <div class="c6 row"><button class="btn btn-sm" type="button" data-adv="0">Observed only</button><button class="btn btn-sm" type="button" data-adv="150">Moderate monsoon</button><button class="btn btn-sm" type="button" data-adv="400">Strong monsoon</button><button class="btn btn-sm" type="button" data-adv="900">Extreme</button></div>
+      </div>
+      <p class="cap" style="margin:6px 0 0">Adds a hypothetical outward bank move to the observed one, then re-applies the same flag rule. Illustrative only — not a forecast of erosion.</p>
+    </div>
+  </section>
+  <div class="g">
+    <section class="pn c8"><div class="pn-h"><h3>Bank movement along the river</h3><span class="r fa">north → south</span></div><div class="pn-b" id="ew-profile"></div></section>
+    <section class="pn c4"><div class="pn-h"><h3>Land lost vs gained</h3></div><div class="pn-b" id="ew-area"></div></section>
+  </div>
+
+  <section class="pn" style="margin-bottom:16px">
+    <div class="pn-h"><h3>Settlements nearest the river</h3><span class="r fa" id="ew-rule"></span></div>
+    <div class="pn-b flush tscroll" style="max-height:520px;margin-top:12px" id="ew-table"></div>
+  </section>
+
+  <details class="pn">
+    <summary><span class="eyebrow" style="margin:0">Method &amp; limits</span></summary>
+    <div class="pn-b" id="ew-method" style="padding-top:0"></div>
+  </details>
+</main>
+
+<footer class="footer"><span>EchoSphere · Team THEIA · NASA Space Apps 2026</span><span>NISAR: NASA-ISRO via ASF DAAC · Places © OpenStreetMap contributors · Basemap © Esri</span></footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="data/manifest.js?v=202609291530"></script>
+<script src="data/erosion.js?v=202609291530"></script>
+<script src="data/examples.js?v=202609291530"></script>
+<script src="js/locations.js?v=202609291530"></script>
+<script src="js/app.js?v=202609291530"></script>
+<script src="js/ui.js?v=202609291530"></script>
+<script src="js/monitor.js?v=202609291530"></script>
+</body>
+</html>

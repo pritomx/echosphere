@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EchoSphere — Listening to Earth change through radar</title>
+  <meta name="description" content="EchoSphere turns real NASA-ISRO NISAR radar observations into surface-change insight and a Bangladesh early-warning concept. Team THEIA, NASA Space Apps 2026.">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=202609291530">
+</head>
+<body data-page="landing">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="index.html"><b>EchoSphere</b><span>Team THEIA</span></a>
+  <ul class="tabs" id="nav-links">
+    <li><a href="index.html" aria-current="page">Home</a></li>
+    <li><a href="monitor.html">Area Selection</a></li>
+    <li><a href="erosion.html"><span class="step">01</span>Erosion Watch</a></li>
+    <li><a href="explore.html"><span class="step">02</span>Flood Watch</a></li>
+    <li><a href="about.html">Method</a></li>
+  </ul>
+  <div class="sysline"><span id="sys-mode"></span><span>UTC <b id="sys-clock">--:--:--</b></span></div>
+  <button class="apibtn" id="api-btn" type="button" aria-expanded="false" aria-controls="api-menu"><span class="apidot" id="api-dot"></span>APIs</button>
+  <div class="apimenu" id="api-menu" hidden></div>
+  <button class="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Open navigation menu">≡</button>
+</header>
+
+<main id="main" class="wrap">
+  <section class="hero">
+    <div>
+      <span class="eyebrow">NASA Space Apps 2026 · Dancing with the SARs</span>
+      <h1 class="display">Listening to Earth <em>change</em> through radar.</h1>
+      <p class="lead" style="margin-top:22px">Every 12 days, through monsoon clouds, EchoSphere tells Jamuna field officers where the river's banks moved — and which villages it came closer to.</p>
+      <div class="row" style="margin-top:28px">
+        <a class="btn pri" href="monitor.html">Monitor any place</a>
+        <a class="btn" href="erosion.html">Erosion Watch</a>
+        <a class="btn" href="explore.html">Explore Earth</a>
+        <a class="btn" href="explore.html#act">Bangladesh Concept</a>
+        <a class="btn" href="about.html">How It Works</a>
+      </div>
+      <div class="hero-stats" id="hero-stats"></div>
+      <p class="cap" id="data-status" role="status" style="margin-top:14px"></p>
+    </div>
+    <figure class="hero-art" style="margin:0">
+      <img id="hero-img" alt="">
+      <figcaption class="over glass" id="hero-cap" style="border-radius:14px"></figcaption>
+    </figure>
+  </section>
+
+  <div class="section-head"><div><span class="eyebrow">The story</span><h2 class="h2">Observe. Understand. Act.</h2></div></div>
+  <div class="steps">
+    <a class="step-card" href="erosion.html"><span class="num">01</span><h3>Watch the banks</h3><p>Every 12 days, through the clouds: where the Jamuna's banks moved, and which villages the river came closer to.</p><span class="go">Erosion Watch →</span></a>
+    <a class="step-card" href="explore.html"><span class="num">02</span><h3>Flood Watch</h3><p>The radar scenes behind it — swipe between dates, and see how sure we are.</p><span class="go">Open the map →</span></a>
+    <a class="step-card" href="explore.html#act"><span class="num">03</span><h3>Flood warning</h3><p>For char communities on the Jamuna: a radar trigger, rainfall context and a plain Bangla SMS.</p><span class="go">Bangladesh concept →</span></a>
+  </div>
+
+  <div class="section-head"><div><span class="eyebrow">Sites</span><h2 class="h2">Four river communities, one instrument</h2></div><p><span class="tag tag-real">CURRENT</span> observed by NISAR &amp; NASA data · <span class="tag tag-sim">SIMULATED</span> what-if scenarios</p></div>
+  <div class="sites" id="sites"></div>
+</main>
+
+<footer class="footer"><span>EchoSphere · Team THEIA · NASA Space Apps Challenge 2026</span><span>Data: NASA-ISRO NISAR via NASA ASF DAAC · Not an official NASA/ISRO product</span></footer>
+<script src="data/manifest.js?v=202609291530"></script>
+<script src="data/erosion.js?v=202609291530"></script>
+<script src="data/examples.js?v=202609291530"></script>
+<script src="js/locations.js?v=202609291530"></script>
+<script src="js/app.js?v=202609291530"></script>
+<script src="js/ui.js?v=202609291530"></script>
+<script src="js/monitor.js?v=202609291530"></script>
+</body>
+</html>

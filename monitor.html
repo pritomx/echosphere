@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Area Selection — EchoSphere</title>
+  <meta name="description" content="Pick any place on the map, set your own water and rainfall thresholds, and load NISAR radar imagery, rainfall and alerts for that area.">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <link rel="stylesheet" href="css/style.css?v=202609291530">
+</head>
+<body data-page="monitor">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="index.html"><b>EchoSphere</b><span>Team THEIA</span></a>
+  <ul class="tabs" id="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="monitor.html" aria-current="page">Area Selection</a></li>
+    <li><a href="erosion.html"><span class="step">01</span>Erosion Watch</a></li>
+    <li><a href="explore.html"><span class="step">02</span>Flood Watch</a></li>
+    <li><a href="about.html">Method</a></li>
+  </ul>
+  <div class="sysline"><span id="sys-mode"></span><span>UTC <b id="sys-clock">--:--:--</b></span></div>
+  <button class="apibtn" id="api-btn" type="button" aria-expanded="false" aria-controls="api-menu"><span class="apidot" id="api-dot"></span>APIs</button>
+  <div class="apimenu" id="api-menu" hidden></div>
+  <button class="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Open navigation menu">≡</button>
+</header>
+
+<main id="main" class="wrap">
+  <div class="section-head" style="margin-top:8px">
+    <div>
+      <span class="eyebrow">Area Selection</span>
+      <h1 class="h2" style="font-size:clamp(36px,5vw,60px)" id="mon-title">Choose a place to watch</h1>
+      <p class="mu" id="mon-sub">Search, click the map, or open an example. The area you load here is the area every tab shows.</p>
+    </div>
+  </div>
+
+  <div class="g">
+    <!-- controls -->
+    <aside class="c4" style="display:flex;flex-direction:column;gap:16px" aria-label="Area and alert settings">
+      <section class="pn">
+        <div class="pn-h"><h3>Place</h3></div>
+        <div class="pn-b">
+          <label for="mon-q">Search</label>
+          <div class="row" style="flex-wrap:nowrap"><input type="text" id="mon-q" placeholder="e.g. Sirajganj, Mississippi delta…" autocomplete="off"><button class="btn btn-sm" id="mon-search" type="button">Find</button></div>
+          <ul id="mon-results" class="api-results" style="list-style:none;margin:8px 0 0;padding:0"></ul>
+          <p class="lbl" style="margin-top:14px">Examples</p>
+          <div class="row" id="mon-examples" style="gap:6px"></div>
+          <label for="mon-size" style="margin-top:14px">Area size · <output id="mon-size-out">25 km</output></label>
+          <input type="range" id="mon-size" min="10" max="50" step="5" value="25">
+          <p class="cap" style="margin:4px 0 0">Or click anywhere on the map to centre the area there.</p>
+          <button class="btn pri" id="mon-load" type="button" disabled style="min-height:48px;width:100%;margin-top:14px">Load area</button>
+          <ol id="mon-steps" class="bullets" style="font-size:12px;margin:10px 0 0"></ol>
+        </div>
+      </section>
+
+
+    </aside>
+
+    <!-- map -->
+    <section class="pn c8 map-card" id="map-card" aria-label="Map" style="align-self:start;position:sticky;top:80px">
+      <div style="position:relative">
+        <div id="map" role="region" aria-label="Map — click to choose an area"></div>
+        <div class="map-top">
+          <div class="seg glass" id="img-seg" role="group" aria-label="Imagery" hidden>
+            <button type="button" data-v="after" aria-pressed="true">Latest pass</button>
+            <button type="button" data-v="before" aria-pressed="false">Previous pass</button>
+            <button type="button" data-v="swipe" aria-pressed="false">⇆ Swipe</button>
+          </div>
+        </div>
+        <div class="swipe-handle" id="swipe" tabindex="0" role="slider" aria-label="Before and after divider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"><div class="knob" aria-hidden="true">⇆</div></div>
+        <div class="swipe-labels" aria-hidden="true"><span class="glass" id="swipe-before"></span><span class="glass" id="swipe-after"></span></div>
+      </div>
+      <div class="map-bottom"><span class="cap" style="margin:0" id="map-note">Basemap © OpenStreetMap contributors</span><div class="row" style="margin-left:auto"><label for="mon-op" style="margin:0">Opacity</label><input type="range" id="mon-op" min="20" max="100" value="95" style="width:120px"></div></div>
+    </section>
+  </div>
+
+  <div id="mon-out" hidden>
+    <section class="pn" style="margin-bottom:16px"><div class="kpis" id="mon-kpis"></div></section>
+    <div class="g">
+      <section class="pn c7"><div class="pn-h"><h3>Rainfall · observed and forecast</h3></div><div class="pn-b" id="mon-rain"></div></section>
+      <section class="pn c5"><div class="pn-h"><h3>Decision</h3><span class="r" id="mon-dec-tag"></span></div><div class="pn-b" id="mon-dec"></div></section>
+    </div>
+    <div class="g">
+      <section class="pn c5"><div class="pn-h"><h3>NISAR passes over this area</h3></div><div class="pn-b" id="mon-passes"></div></section>
+      <section class="pn c7"><div class="pn-h"><h3>Places in the area</h3><span class="r fa" id="mon-places-n"></span></div><div class="pn-b flush tscroll" style="max-height:340px;margin-top:10px" id="mon-places"></div></section>
+    </div>
+  </div>
+</main>
+
+<footer class="footer"><span>EchoSphere · Team THEIA · NASA Space Apps 2026</span><span>NISAR imagery: NASA GIBS · Catalog: NASA CMR · Rain: NASA POWER, Open-Meteo · Places &amp; search: © OpenStreetMap contributors</span></footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="data/manifest.js?v=202609291530"></script>
+<script src="data/erosion.js?v=202609291530"></script>
+<script src="data/examples.js?v=202609291530"></script>
+<script src="js/locations.js?v=202609291530"></script>
+<script src="js/app.js?v=202609291530"></script>
+<script src="js/ui.js?v=202609291530"></script>
+<script src="js/monitor.js?v=202609291530"></script>
+</body>
+</html>

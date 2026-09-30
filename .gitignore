@@ -1,0 +1,9 @@
+# never upload these — keep them local
+.venv/
+__pycache__/
+*.pyc
+data/raw/*.h5
+data/raw/*.hdf5
+# tokens/credentials must never be in the project
+.earthdata_token
+.env
