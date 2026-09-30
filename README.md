@@ -151,7 +151,6 @@ Compares the two latest Jamuna scenes from the same NISAR track:
 python erosion_watch.py      # writes data/erosion.js + data/processed/erosion_change.png
 ```
 
-This is a screening signal. Two dates cannot separate erosion from water-level change, and there is no field validation yet.
 "# echosphere" 
 "# echosphere" 
 "# echosphere" 
